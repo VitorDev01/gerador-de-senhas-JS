@@ -1,0 +1,226 @@
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <title></title>
+    <style> 
+          * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: serif;
+        font-size: x-large;
+      }
+      
+      body {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: blueviolet;
+      }
+      
+      main {
+        padding: 20px;
+        box-shadow: 0 1px 10px #ccc;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        border-radius: 15px;
+        background-color: #f7f7f7;
+      }
+      
+      main > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #f7f7f7;
+      }
+      
+      input {
+        padding: 5px;
+        outline: none;
+        accent-color: blueviolet;
+        border-color: blueviolet;
+        border-radius: 10px;
+      }
+      
+      input[type=checkbox] {
+        width: 18px;
+        height: 18px;
+        
+      }
+    
+      
+      input[type=range] {
+        width: 90%;
+         -webkit-appearance: none;
+        background: blueviolet;
+        outline: none;
+        width: 100%;
+        height: 10px;
+        border-radius: 9px;  
+        outline: none;
+      }
+      
+      input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%; 
+          background: blueviolet;
+          cursor: pointer;
+      }
+      
+      input[type=range]::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          border-radius: 50%; 
+      
+          background: #2796ee;
+          cursor: pointer;
+      }
+      
+      input[type=checkbox] {
+         position: relative;
+         cursor: pointer;
+         outline: none;
+    }
+    
+    input[type=checkbox]:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 0;
+      left: 0;
+      background-color: blueviolet;
+      border-radius: 10px;
+      outline: none;
+    }
+    
+    input[type=checkbox]:checked:after {
+      content: "";
+      display: block;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+      position: absolute;
+      top: 5px;
+      left: 9px;
+    }
+   
+    button {
+      background-color: blueviolet;
+      cursor: pointer;
+      color: white;
+      border: none;
+      padding: 5px;
+      outline: none;
+      border-radius: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    
+     <main>
+       <h1>Gerador De Senhas</h1>
+    <input id="inputPasswordId" type="text" disabled  />
+       <p>Numero de caracters</p>
+    <div>
+      <input id="inputLengthId" type="range" min="6" max="24"/>
+      <label for="inputLengthId"></label>
+    </div>
+    <div>
+      <input id="chkLowerId" type="checkbox" />
+      <label for="chkLowerId">Letras minúsculas</label>
+    </div>
+    <div>
+      <input id="chkUpperId" type="checkbox" />
+      <label for="chkUpperId">Letras maiúsculas</label>
+    </div>
+    <div>
+      <input id="chkNumberId" type="checkbox" />
+      <label for="chkNumberId">Números</label>
+    </div>
+    <div>
+      <input id="chkSymbolsId" type="checkbox" />
+      <label for="chkSymbolsId">Símbolos</label>
+    </div>
+
+    <button id="btnGerar">Gerar</button>
+  </main>
+
+  <script>
+    //deferenciando inputs
+    const passInput = document.querySelector("#inputPasswordId");
+    const lenInput = document.querySelector("#inputLengthId");
+    const infoLength = document.querySelector('label[for="inputLengthId"]');
+    const btnGerar = document.querySelector("#btnGerar");
+
+    //deferenciando check box
+    const chkLower = document.querySelector("#chkLowerId");
+    const chkUpper = document.querySelector("#chkUpperId");
+    const chkNumber = document.querySelector("#chkNumberId");
+    const chkSymbols = document.querySelector("#chkSymbolsId");
+    
+    //declarando a constante de numeros
+    const numbers = [0, 1, 2 , 3 ,4 , 5 , 6 ,7 , 8, 9 ,];
+    //declarando a constante de simbolos
+    const symbols = ["!", "@", "#", "$", "%"];
+
+    const caracters = Array.from(Array(26)).map((_, i) => i + 97);
+    const LowercaseCaracters = caracters.map((item) => String.fromCharCode(item));
+    const UppercaseCaracters = LowercaseCaracters.map((item) => item.toUpperCase());
+
+    infoLength.innerHTML = lenInput.value;
+    
+         lenInput.addEventListener("change", () => {
+        infoLength.innerHTML = lenInput.value;
+      });
+      
+      btnGerar.addEventListener("click", () => {
+        generatePassword(
+          chkNumber.checked,
+          chkSymbols.checked,
+          chkLower.checked,
+          chkUpper.checked,
+          lenInput.value
+        );
+      });
+      
+      const generatePassword = (
+        hasNumbers,
+        hasSymbols,
+        hasLowercase,
+        hasUppercase,
+        lenght
+      ) => {
+        const newArray = [
+          ...(hasNumbers ? numbers : []),
+          ...(hasSymbols ? symbols : []),
+          ...(hasLowercase ? LowercaseCaracters : []),
+          ...(hasUppercase ? UppercaseCaracters : []),
+        ];
+      
+        if (newArray.length === 0) return;
+      
+        let password = "";
+      
+        for (let i = 0; i < lenght; i++) {
+          const randomIndex = Math.floor(Math.random() * newArray.length);
+          password += newArray[randomIndex];
+        }
+      
+        passInput.value = password;
+      };
+  </script>
+  </body>
+</html>
